@@ -1,0 +1,90 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>割圆术计算π</title>  
+    <style>  
+        body {  
+            font-family: Arial, sans-serif;  
+            text-align: center;  
+            background-color: #f2f2f2;  
+            padding: 20px;  
+        }  
+  
+        canvas {  
+            border: 2px solid #000;  
+            margin-bottom: 20px;  
+        }  
+  
+        button {  
+            padding: 10px 20px;  
+            margin: 0 10px;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <h1>割圆术计算π</h1>  
+    <canvas id="polygonCanvas" width="400" height="400"></canvas>  
+    <p>边数: <span id="sides">3</span></p>  
+    <p>π的近似值: <span id="piValue">0</span></p>  
+    <button onclick="increaseSides()">增加边数</button>  
+    <button onclick="reset()">重置</button>  
+  
+    <script>  
+        const canvas = document.getElementById('polygonCanvas');  
+        const ctx = canvas.getContext('2d');  
+        let sides = 3;  
+        let radius = canvas.width / 2;  
+        let centerX = canvas.width / 2;  
+        let centerY = canvas.height / 2;  
+        let fillColor = 'rgba(255, 0, 0, 0.5)'; // 红色半透明填充  
+  
+        function drawPolygon() {  
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  
+            ctx.beginPath();  
+            ctx.moveTo(centerX + radius * Math.cos(0), centerY + radius * Math.sin(0));  
+            for (let i = 1; i <= sides; i++) {  
+                const angle = (i * 2 * Math.PI) / sides;  
+                ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));  
+            }  
+            ctx.closePath();  
+            ctx.fillStyle = fillColor; // 设置填充颜色  
+            ctx.fill(); // 填充多边形  
+            ctx.strokeStyle = 'black';  
+            ctx.lineWidth = 2;  
+            ctx.stroke(); // 绘制多边形边框  
+        }  
+  
+        function calculatePi() {  
+            let perimeter = 0;  
+            for (let i = 0; i < sides; i++) {  
+                const angle = (i * 2 * Math.PI) / sides;  
+                const nextAngle = ((i + 1) * 2 * Math.PI) / sides;  
+                const sideLength = 2 * radius * Math.sin((nextAngle - angle) / 2);  
+                perimeter += sideLength;  
+            }  
+            const piApproximation = perimeter / (2 * radius);  
+            document.getElementById('piValue').textContent = piApproximation.toFixed(5);  
+        }  
+  
+        function increaseSides() {  
+            sides += 2; // 每次增加偶数边数，以保持多边形对称性  
+            drawPolygon();  
+            calculatePi();  
+            document.getElementById('sides').textContent = sides;  
+        }  
+  
+        function reset() {  
+            sides = 3;  
+            drawPolygon();  
+            calculatePi();  
+            document.getElementById('sides').textContent = sides;  
+        }  
+  
+        // 初始绘制和计算  
+        drawPolygon();  
+        calculatePi();  
+    </script>  
+</body>  
+</html>
